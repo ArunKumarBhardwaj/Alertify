@@ -13,7 +13,7 @@ Alertify is a high-performance emergency notification pager built with React Nat
 
 ## 🛠️ Technical Stack
 
-- **Framework**: Expo (SDK 52) / React Native
+- **Framework**: Expo (SDK 55) / React Native
 - **Native Logic**: Kotlin (NotificationListenerService, BroadcastReceivers)
 - **Audio**: `expo-audio` (JS) + `MediaPlayer` (Kotlin)
 - **State Management**: `react-native-mmkv` + Native `SharedPreferences` sync
