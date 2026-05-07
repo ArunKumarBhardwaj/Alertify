@@ -1,35 +1,26 @@
-import { Tabs } from 'expo-router';
+import { Colors } from '@/constants/theme';
+import { useAlarmLogic } from '@/hooks/use-alarm-logic';
+import { useColorScheme } from '@/hooks/use-color-scheme';
+import { NativeTabs } from 'expo-router/unstable-native-tabs';
 import React from 'react';
 
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
-
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const colorScheme = useColorScheme() === 'dark' ? 'dark' : 'light';
+  useAlarmLogic(); // Background listener
 
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
-    </Tabs>
+    <NativeTabs
+      tintColor={Colors[colorScheme].tint}
+      rippleColor={Colors[colorScheme].border}
+    >
+      <NativeTabs.Trigger name="apps">
+        <NativeTabs.Trigger.Label>Applications</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon md="apps" />
+      </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="settings">
+        <NativeTabs.Trigger.Label>Engine</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon md="settings" />
+      </NativeTabs.Trigger>
+    </NativeTabs>
   );
 }

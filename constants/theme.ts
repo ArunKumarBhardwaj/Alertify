@@ -5,27 +5,34 @@
 
 import { Platform } from 'react-native';
 
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
-
 export const Colors = {
   light: {
-    text: '#11181C',
-    background: '#fff',
-    tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
-    tabIconSelected: tintColorLight,
+    text: '#1D1B16',
+    background: '#F9F8F6',
+    surface: '#FFFFFF',
+    border: '#E5E2DD',
+    tint: '#D97757', // Claude Rust
+    icon: '#6B6256',
+    tabIconDefault: '#6B6256',
+    tabIconSelected: '#D97757',
+    danger: '#B91C1C',
+    success: '#059669',
   },
   dark: {
-    text: '#ECEDEE',
-    background: '#151718',
-    tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
-    tabIconSelected: tintColorDark,
+    text: '#F9F8F6',
+    background: '#1D1B16',
+    surface: '#26241E',
+    border: '#3F3B34',
+    tint: '#D97757',
+    icon: '#A19789',
+    tabIconDefault: '#A19789',
+    tabIconSelected: '#D97757',
+    danger: '#EF4444',
+    success: '#10B981',
   },
 };
+
+export type ThemeColors = typeof Colors.light;
 
 export const Fonts = Platform.select({
   ios: {
