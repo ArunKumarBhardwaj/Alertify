@@ -1,50 +1,48 @@
-# Welcome to your Expo app 👋
+# 🚨 Alertify
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Alertify is a high-performance emergency notification pager built with React Native and Native Kotlin. It transforms your Android device into a reliable alerting tool that ensures you never miss critical notifications from your selected applications.
 
-## Get started
+## 🚀 Key Features
 
-1. Install dependencies
+- **Killed-Mode Reliability**: Unlike standard apps, Alertify uses a native Android `NotificationListenerService`. This ensures that even if the app is fully closed or killed by the OS, the siren and vibration will still trigger.
+- **Native Siren Engine**: Built with Kotlin's `MediaPlayer` for low-latency, high-volume emergency sounds that work independently of the React Native bridge.
+- **Persistent Alarms**: Once triggered, the alarm continues to loop with a custom vibration pattern until manually dismissed via the in-app overlay or the persistent system notification.
+- **Custom Sound Picker**: Select any audio file from your device to use as your emergency alert sound.
+- **App Filtering**: Choose exactly which apps (e.g., WhatsApp, PagerDuty, Slack) are allowed to trigger the alarm.
+- **Modern UI**: A sleek, high-performance interface built with `@legendapp/list` for smooth scrolling and Material Design aesthetics.
 
+## 🛠️ Technical Stack
+
+- **Framework**: Expo (SDK 52) / React Native
+- **Native Logic**: Kotlin (NotificationListenerService, BroadcastReceivers)
+- **Audio**: `expo-audio` (JS) + `MediaPlayer` (Kotlin)
+- **State Management**: `react-native-mmkv` + Native `SharedPreferences` sync
+- **Styling**: Vanilla CSS-in-JS with a Premium Dark Theme
+
+## 📦 Installation & Setup
+
+1. **Clone the repo**:
+   ```bash
+   git clone https://github.com/ArunKumarBhardwaj/Alertify.git
+   cd Alertify
+   ```
+
+2. **Install dependencies**:
    ```bash
    npm install
    ```
 
-2. Start the app
-
+3. **Build and Run**:
+   Since the app uses custom native modules, you must run a native build:
    ```bash
-   npx expo start
+   npx expo run:android
    ```
 
-In the output, you'll find options to open the app in a
+## 🔐 Important Permissions
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+To function correctly, Alertify requires:
+- **Notification Access**: Required to detect incoming messages from your chosen apps.
+- **Battery Optimization Exemption**: To ensure the service stays alive, set the app battery usage to "Unrestricted" in Android settings.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+---
+Built with ❤️ for reliability.
