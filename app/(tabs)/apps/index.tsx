@@ -2,8 +2,8 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, ThemeColors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { getSelectedApps, saveSelectedApps } from '@/lib/storage';
-import { LegendList } from '@legendapp/list';
-import { useHeaderHeight } from '@react-navigation/elements';
+import { LegendList } from '@legendapp/list/react-native';
+import { useHeaderHeight } from "expo-router/react-navigation";
 import * as Haptics from 'expo-haptics';
 import { Image } from 'expo-image';
 import { Stack } from 'expo-router';
@@ -152,9 +152,11 @@ export default function AppsScreen() {
         keyExtractor={(item) => item.packageName}
         numColumns={3}
         renderItem={renderItem}
-        estimatedItemSize={ITEM_HEIGHT}
+        estimatedItemSize={35}
         extraData={selectedPackages}
         contentContainerStyle={styles.listContent}
+        recycleItems={true}
+        drawDistance={1500}
       />
     </View>
   );
