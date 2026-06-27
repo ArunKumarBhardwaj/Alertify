@@ -66,22 +66,24 @@ class NotificationListenerModule : Module() {
     Function("getInstalledApps") {
       val context = appContext.reactContext ?: return@Function emptyList<Map<String, Any>>()
       val pm = context.packageManager
-      val apps = pm.getInstalledPackages(PackageManager.GET_META_DATA)
+      
+      val intent = Intent(Intent.ACTION_MAIN).apply {
+        addCategory(Intent.CATEGORY_LAUNCHER)
+      }
+      val resolveInfos = pm.queryIntentActivities(intent, 0)
       
       val result = mutableListOf<Map<String, Any>>()
-      for (pkg in apps) {
-        val appInfo = pkg.applicationInfo ?: continue
-        val isSystem = (appInfo.flags and android.content.pm.ApplicationInfo.FLAG_SYSTEM) != 0
-        // Filter: only show user-installed apps or system apps that are launchable (have an entry point)
-        val launchIntent = pm.getLaunchIntentForPackage(pkg.packageName)
-        if (launchIntent == null && isSystem) continue
-
-        val name = appInfo.loadLabel(pm).toString()
-        val packageName = pkg.packageName
+      val seenPackages = mutableSetOf<String>()
+      
+      for (resolveInfo in resolveInfos) {
+        val appInfo = resolveInfo.activityInfo?.applicationInfo ?: continue
+        val packageName = appInfo.packageName
+        if (seenPackages.contains(packageName)) continue
+        seenPackages.add(packageName)
         
-        // Get app icon as base64 string
+        val name = appInfo.loadLabel(pm).toString()
         val iconBase64 = getAppIconAsBase64(context, pm, packageName)
-
+        
         val appMap = mutableMapOf<String, Any>(
           "packageName" to packageName,
           "name" to name
