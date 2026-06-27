@@ -6,7 +6,7 @@ import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated'
 import { requestPermission, hasPermission } from '../../../modules/notification-listener';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { getHistory, HistoryItem, getAlarmSoundUri, saveAlarmSoundUri, isMonitoringEnabled, setMonitoringEnabled } from '@/lib/storage';
+import { getHistory, HistoryItem, getAlarmSoundUri, saveAlarmSoundFromPicker, saveAlarmSoundUri, isMonitoringEnabled, setMonitoringEnabled } from '@/lib/storage';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
 export default function SettingsScreen() {
@@ -61,10 +61,12 @@ export default function SettingsScreen() {
       });
       if (!result.canceled && result.assets.length > 0) {
         const asset = result.assets[0];
-        saveAlarmSoundUri(asset.uri);
-        setAlarmSoundUri(asset.uri);
-        setAlarmSoundName(asset.name ?? 'Custom sound');
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        const storedPath = saveAlarmSoundFromPicker(asset.uri);
+        if (storedPath) {
+          setAlarmSoundUri(storedPath);
+          setAlarmSoundName(asset.name ?? 'Custom sound');
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        }
       }
     } catch (e) {
       console.error('Sound picker error:', e);

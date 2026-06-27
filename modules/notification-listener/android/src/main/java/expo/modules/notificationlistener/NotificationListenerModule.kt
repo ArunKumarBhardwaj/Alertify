@@ -2,7 +2,6 @@ package expo.modules.notificationlistener
 
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.provider.Settings
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
@@ -63,61 +62,22 @@ class NotificationListenerModule : Module() {
       NotificationAlarmManager.isPlaying
     }
 
+    Function("copyAlarmSound") { sourceUri: String ->
+      val context = appContext.reactContext ?: return@Function ""
+      val storedPath = AlarmSoundStorage.copyFromUri(context, sourceUri)
+      storedPath ?: ""
+    }
+
+    Function("clearAlarmSound") {
+      val context = appContext.reactContext
+      if (context != null) {
+        AlarmSoundStorage.clear(context)
+      }
+    }
+
     Function("getInstalledApps") {
       val context = appContext.reactContext ?: return@Function emptyList<Map<String, Any>>()
-      val pm = context.packageManager
-      
-      val intent = Intent(Intent.ACTION_MAIN).apply {
-        addCategory(Intent.CATEGORY_LAUNCHER)
-      }
-      val resolveInfos = pm.queryIntentActivities(intent, 0)
-      
-      val result = mutableListOf<Map<String, Any>>()
-      val seenPackages = mutableSetOf<String>()
-      
-      for (resolveInfo in resolveInfos) {
-        val appInfo = resolveInfo.activityInfo?.applicationInfo ?: continue
-        val packageName = appInfo.packageName
-        if (seenPackages.contains(packageName)) continue
-        seenPackages.add(packageName)
-        
-        val name = appInfo.loadLabel(pm).toString()
-        val iconBase64 = getAppIconAsBase64(context, pm, packageName)
-        
-        val appMap = mutableMapOf<String, Any>(
-          "packageName" to packageName,
-          "name" to name
-        )
-        if (iconBase64 != null) {
-          appMap["icon"] = iconBase64
-        }
-        result.add(appMap)
-      }
-      result.sortBy { (it["name"] as? String)?.lowercase() ?: "" }
-      result
-    }
-  }
-
-  private fun getAppIconAsBase64(context: Context, pm: PackageManager, packageName: String): String? {
-    return try {
-      val icon = pm.getApplicationIcon(packageName)
-      val bitmap = if (icon is android.graphics.drawable.BitmapDrawable) {
-        icon.bitmap
-      } else {
-        val width = icon.intrinsicWidth.coerceAtLeast(1)
-        val height = icon.intrinsicHeight.coerceAtLeast(1)
-        val bmp = android.graphics.Bitmap.createBitmap(width, height, android.graphics.Bitmap.Config.ARGB_8888)
-        val canvas = android.graphics.Canvas(bmp)
-        icon.setBounds(0, 0, canvas.width, canvas.height)
-        icon.draw(canvas)
-        bmp
-      }
-      val outputStream = java.io.ByteArrayOutputStream()
-      bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, outputStream)
-      val bytes = outputStream.toByteArray()
-      "data:image/png;base64," + android.util.Base64.encodeToString(bytes, android.util.Base64.NO_WRAP)
-    } catch (e: Exception) {
-      null
+      AppDiscoveryHelper.getAllSelectableApps(context)
     }
   }
 }

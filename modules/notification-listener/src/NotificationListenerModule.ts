@@ -9,6 +9,8 @@ declare class NotificationListenerModule extends NativeModule<NotificationListen
   syncPref(key: string, value: string): void;
   stopNativeAlarm(): void;
   isNativeAlarmPlaying(): boolean;
+  copyAlarmSound(sourceUri: string): string;
+  clearAlarmSound(): void;
 }
 
 let notificationListenerModule: NotificationListenerModule;
@@ -23,6 +25,8 @@ try {
     syncPref: () => {},
     stopNativeAlarm: () => {},
     isNativeAlarmPlaying: () => false,
+    copyAlarmSound: () => '',
+    clearAlarmSound: () => {},
     addListener: () => ({ remove: () => {} }),
     removeAllListeners: () => {},
   } as any;

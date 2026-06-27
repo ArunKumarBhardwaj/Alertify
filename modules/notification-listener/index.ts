@@ -41,4 +41,12 @@ export function isNativeAlarmPlaying(): boolean {
   return NotificationListenerModule.isNativeAlarmPlaying();
 }
 
+export function copyAlarmSound(sourceUri: string): string {
+  return NotificationListenerModule.copyAlarmSound(sourceUri);
+}
+
+export function clearNativeAlarmSound(): void {
+  NotificationListenerModule.clearAlarmSound();
+}
+
 export * from './src/NotificationListener.types';

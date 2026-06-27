@@ -6,8 +6,8 @@ import { LegendList } from '@legendapp/list/react-native';
 import { useHeaderHeight } from "expo-router/react-navigation";
 import * as Haptics from 'expo-haptics';
 import { Image } from 'expo-image';
-import { Stack } from 'expo-router';
-import React, { memo, useEffect, useMemo, useState } from 'react';
+import { Stack, useFocusEffect } from 'expo-router';
+import React, { memo, useCallback, useMemo, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { AppInfo, getInstalledApps } from '../../../modules/notification-listener';
 
@@ -79,13 +79,20 @@ export default function AppsScreen() {
   const [search, setSearch] = useState('');
   const [selectedPackages, setSelectedPackages] = useState<Set<string>>(new Set());
 
-  useEffect(() => {
+  const loadApps = useCallback(() => {
     const allApps = getInstalledApps();
     setApps(allApps);
     const saved = getSelectedApps();
     setSelectedPackages(new Set(saved));
     setLoading(false);
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      setLoading(true);
+      loadApps();
+    }, [loadApps])
+  );
 
   const filteredApps = useMemo(() => {
     const query = search.toLowerCase();
@@ -147,17 +154,29 @@ export default function AppsScreen() {
         }}
       />
 
-      <LegendList
-        data={filteredApps}
-        keyExtractor={(item) => item.packageName}
-        numColumns={3}
-        renderItem={renderItem}
-        estimatedItemSize={35}
-        extraData={selectedPackages}
-        contentContainerStyle={styles.listContent}
-        recycleItems={true}
-        drawDistance={1500}
-      />
+      {filteredApps.length === 0 ? (
+        <View style={styles.emptyState}>
+          <IconSymbol name="apps" size={40} color={colors.icon} />
+          <Text style={[styles.emptyTitle, { color: colors.text }]}>No apps found</Text>
+          <Text style={[styles.emptyHint, { color: colors.icon }]}>
+            {search
+              ? 'Try a different search term.'
+              : 'Apps from your home screen appear here. Any app that sends a notification will also be added automatically.'}
+          </Text>
+        </View>
+      ) : (
+        <LegendList
+          data={filteredApps}
+          keyExtractor={(item) => item.packageName}
+          numColumns={3}
+          renderItem={renderItem}
+          estimatedItemSize={35}
+          extraData={selectedPackages}
+          contentContainerStyle={styles.listContent}
+          recycleItems={true}
+          drawDistance={1500}
+        />
+      )}
     </View>
   );
 }
@@ -218,5 +237,21 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
     width: '100%',
+  },
+  emptyState: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 32,
+    gap: 10,
+  },
+  emptyTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  emptyHint: {
+    fontSize: 14,
+    textAlign: 'center',
+    lineHeight: 20,
   },
 });

@@ -1,5 +1,5 @@
 import { Colors } from '@/constants/theme';
-import { useAlarmLogic } from '@/hooks/use-alarm-logic';
+import { useAlarm } from '@/hooks/alarm-provider';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
@@ -7,7 +7,7 @@ import Animated, { FadeIn, SlideInUp } from 'react-native-reanimated';
 import { IconSymbol } from './ui/icon-symbol';
 
 export function AlarmOverlay() {
-  const { isRinging, stopSiren } = useAlarmLogic();
+  const { isRinging, stopSiren } = useAlarm();
   const colorScheme = useColorScheme() === 'dark' ? 'dark' : 'light';
   const colors = Colors[colorScheme];
 

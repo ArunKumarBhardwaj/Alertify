@@ -1,5 +1,5 @@
 import { createMMKV } from 'react-native-mmkv';
-import { syncPref } from '../modules/notification-listener';
+import { syncPref, copyAlarmSound, clearNativeAlarmSound } from '../modules/notification-listener';
 
 export const storage = createMMKV();
 
@@ -37,6 +37,22 @@ export const saveAlarmSoundUri = (uri: string | null) => {
   } else {
     storage.remove(StorageKeys.ALARM_SOUND_URI);
     syncToNative('alarm_sound_uri', '');
+    try {
+      clearNativeAlarmSound();
+    } catch {
+      // Ignore if native module is unavailable.
+    }
+  }
+};
+
+export const saveAlarmSoundFromPicker = (pickerUri: string): string | null => {
+  try {
+    const storedPath = copyAlarmSound(pickerUri);
+    if (!storedPath) return null;
+    saveAlarmSoundUri(storedPath);
+    return storedPath;
+  } catch {
+    return null;
   }
 };
 

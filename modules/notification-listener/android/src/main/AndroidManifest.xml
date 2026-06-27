@@ -2,6 +2,8 @@
   package="expo.modules.notificationlistener">
 
   <uses-permission android:name="android.permission.VIBRATE" />
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
 
   <queries>
     <intent>
@@ -11,7 +13,8 @@
   </queries>
 
   <application>
-    <service android:name=".NotificationListenerService"
+    <service
+      android:name=".NotificationListenerService"
       android:label="Alertify Notification Listener"
       android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
       android:exported="true">
@@ -19,5 +22,18 @@
         <action android:name="android.service.notification.NotificationListenerService" />
       </intent-filter>
     </service>
+
+    <service
+      android:name=".AlarmForegroundService"
+      android:exported="false"
+      android:foregroundServiceType="mediaPlayback" />
+
+    <receiver
+      android:name=".AlarmDismissReceiver"
+      android:exported="false">
+      <intent-filter>
+        <action android:name="com.arun_bhardwaj.Alertify.ACTION_DISMISS_ALARM" />
+      </intent-filter>
+    </receiver>
   </application>
 </manifest>
